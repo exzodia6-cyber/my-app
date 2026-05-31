@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Rarity {
+  CONSUMER_GRADE
+  INDUSTRIAL_GRADE
+  MIL_SPEC
+  RESTRICTED
+  CLASSIFIED
+  COVERT
+  RARE_SPECIAL_ITEM
+}
+
+enum ItemWear {
+  BATTLE_SCARRED
+  WELL_WORN
+  FIELD_TESTED
+  MINIMAL_WEAR
+  FACTORY_NEW
+}
+
+enum HistoryType {
+  CASE_OPEN
+  ITEM_SELL
+  UPGRADE_SUCCESS
+  UPGRADE_FAIL
+  CONTRACT
+  BALANCE_TOPUP
+}
+
+model User {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  username     String          @unique
+  passwordHash String
+  role         Role            @default(USER)
+  balance      Int             @default(2500)
+  createdAt    DateTime        @default(now())
+  inventory    InventoryItem[]
+  history      History[]
+}
+
+model Item {
+  id             String          @id @default(cuid())
+  weapon         String
+  skin           String
+  rarity         Rarity
+  price          Int
+  imageUrl       String
+  wear           ItemWear
+  createdAt      DateTime        @default(now())
+  inventoryItems InventoryItem[]
+  caseItems      CaseItem[]
+
+  @@index([price])
+  @@index([rarity])
+}
+
+model Case {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String
+  price       Int
+  imageUrl    String
+  accentColor String     @default("#f59e0b")
+  createdAt   DateTime   @default(now())
+  items       CaseItem[]
+}
+
+model CaseItem {
+  id       String @id @default(cuid())
+  caseId   String
+  itemId   String
+  chance   Float
+  case     Case   @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  item     Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([caseId, itemId])
+}
+
+model InventoryItem {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String
+  acquiredAt DateTime @default(now())
+  locked    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id])
+
+  @@index([userId])
+}
+
+model History {
+  id        String      @id @default(cuid())
+  userId    String
+  type      HistoryType
+  title     String
+  metadata  Json
+  createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

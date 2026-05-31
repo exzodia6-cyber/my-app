@@ -1,0 +1,2 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+:root{color-scheme:dark}body{margin:0;background:#070a12;color:#f8fafc;font-family:Inter,ui-sans-serif,system-ui,sans-serif}.noise{background-image:radial-gradient(circle at 20% 10%,rgba(245,158,11,.18),transparent 28%),radial-gradient(circle at 90% 15%,rgba(34,211,238,.14),transparent 30%),linear-gradient(135deg,rgba(255,255,255,.04) 0 1px,transparent 1px 12px)}.roulette{animation:slide 1.8s cubic-bezier(.2,.9,.2,1)}@keyframes slide{from{transform:translateX(-45%)}to{transform:translateX(0)}}

@@ -1,0 +1,9 @@
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+COPY apps/frontend/package*.json ./apps/frontend/
+COPY apps/backend/package*.json ./apps/backend/
+RUN npm install
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--workspace", "apps/frontend", "--", "--host", "0.0.0.0"]

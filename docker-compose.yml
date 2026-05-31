@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cs2_case_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cs2
+      POSTGRES_PASSWORD: cs2password
+      POSTGRES_DB: cs2_case_arena
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cs2 -d cs2_case_arena"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://cs2:cs2password@postgres:5432/cs2_case_arena?schema=public
+      JWT_SECRET: change-me-in-production
+      PORT: 4000
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "4000:4000"
+    command: sh -c "npx prisma migrate deploy --schema apps/backend/prisma/schema.prisma && npm run prisma:seed --workspace apps/backend && npm run dev --workspace apps/backend"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/backend/node_modules
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:4000/api
+    ports:
+      - "5173:5173"
+    command: npm run dev --workspace apps/frontend -- --host 0.0.0.0
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/frontend/node_modules
+volumes:
+  postgres_data:
