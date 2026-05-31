@@ -1,11 +1,12 @@
 import { Router } from 'express';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
 import { asyncHandler, AppError } from '../utils/errors.js';
 import { pickWeighted } from '../utils/game.js';
 
 const router = Router();
-const includeCase = { items: { include: { item: true }, orderBy: { chance: 'desc' as const } } };
+const includeCase = { items: { include: { item: true }, orderBy: { chance: 'desc' as const } } } satisfies Prisma.CaseInclude;
 
 router.get('/', asyncHandler(async (_req, res) => {
   const cases = await prisma.case.findMany({ include: includeCase, orderBy: { price: 'asc' } });
@@ -19,7 +20,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 router.post('/:id/open', requireAuth, asyncHandler(async (req, res) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const [caseData, user] = await Promise.all([
       tx.case.findUnique({ where: { id: req.params.id }, include: includeCase }),
       tx.user.findUnique({ where: { id: req.user!.id } })
