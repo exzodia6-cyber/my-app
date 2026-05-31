@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
 import { asyncHandler, AppError } from '../utils/errors.js';
@@ -12,7 +13,7 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 router.post('/:itemId/sell', asyncHandler(async (req, res) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const inv = await tx.inventoryItem.findFirst({ where: { id: req.params.itemId, userId: req.user!.id }, include: { item: true } });
     if (!inv) throw new AppError(404, 'Inventory item not found');
     await tx.inventoryItem.delete({ where: { id: inv.id } });

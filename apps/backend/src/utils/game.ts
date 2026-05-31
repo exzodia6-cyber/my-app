@@ -1,7 +1,11 @@
-import { Item, CaseItem } from '@prisma/client';
+import type { Item, CaseItem } from '@prisma/client';
 
-export function pickWeighted<T extends CaseItem & { item: Item }>(entries: T[]): T {
-  const total = entries.reduce((sum, entry) => sum + entry.chance, 0);
+export function pickWeighted<T extends CaseItem & { item: Item }>(entries: readonly T[]): T {
+  if (entries.length === 0) {
+    throw new Error('Cannot pick from an empty weighted item list');
+  }
+
+  const total = entries.reduce((sum: number, entry: T) => sum + entry.chance, 0);
   let roll = Math.random() * total;
   for (const entry of entries) {
     roll -= entry.chance;

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../config/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -15,7 +16,7 @@ router.get('/items', asyncHandler(async (_req, res) => {
 
 router.post('/upgrade', asyncHandler(async (req, res) => {
   const body = z.object({ inventoryItemId: z.string(), targetItemId: z.string() }).parse(req.body);
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const source = await tx.inventoryItem.findFirst({ where: { id: body.inventoryItemId, userId: req.user!.id }, include: { item: true } });
     const target = await tx.item.findUnique({ where: { id: body.targetItemId } });
     if (!source) throw new AppError(404, 'Source item not found');
@@ -34,7 +35,7 @@ router.post('/upgrade', asyncHandler(async (req, res) => {
 router.post('/contract', asyncHandler(async (req, res) => {
   const body = z.object({ inventoryItemIds: z.array(z.string()).length(10) }).parse(req.body);
   if (new Set(body.inventoryItemIds).size !== 10) throw new AppError(400, 'Choose 10 unique items');
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const sourceItems = await tx.inventoryItem.findMany({ where: { id: { in: body.inventoryItemIds }, userId: req.user!.id }, include: { item: true } });
     if (sourceItems.length !== 10) throw new AppError(400, 'All contract items must belong to you');
     const average = sourceItems.reduce((sum, entry) => sum + entry.item.price, 0) / 10;

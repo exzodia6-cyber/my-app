@@ -1,11 +1,12 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient, Rarity, ItemWear } from '@prisma/client';
+import type { Item } from '@prisma/client';
 
 const prisma = new PrismaClient();
 const weapons = ['AK-47','AWP','M4A1-S','M4A4','Desert Eagle','USP-S','Glock-18','P250','Five-SeveN','Galil AR','FAMAS','SSG 08','MAC-10','MP9','P90','Nova','MAG-7','Negev'];
 const skins = ['Neon Pulse','Obsidian Grid','Amber Reactor','Crimson Byte','Arctic Circuit','Ghostline','Solar Bloom','Night Protocol','Cyber Fang','Violet Core','Emerald Static','Royal Alloy','Prism Ash','Dragon Glass','Carbon Rush','Fade Signal','Copper Storm','Quantum Mist','Ruby Sync','Ivory Spark'];
-const rarities = [Rarity.CONSUMER_GRADE, Rarity.INDUSTRIAL_GRADE, Rarity.MIL_SPEC, Rarity.RESTRICTED, Rarity.CLASSIFIED, Rarity.COVERT, Rarity.RARE_SPECIAL_ITEM];
-const wears = [ItemWear.BATTLE_SCARRED, ItemWear.WELL_WORN, ItemWear.FIELD_TESTED, ItemWear.MINIMAL_WEAR, ItemWear.FACTORY_NEW];
+const rarities: readonly Rarity[] = [Rarity.CONSUMER_GRADE, Rarity.INDUSTRIAL_GRADE, Rarity.MIL_SPEC, Rarity.RESTRICTED, Rarity.CLASSIFIED, Rarity.COVERT, Rarity.RARE_SPECIAL_ITEM];
+const wears: readonly ItemWear[] = [ItemWear.BATTLE_SCARRED, ItemWear.WELL_WORN, ItemWear.FIELD_TESTED, ItemWear.MINIMAL_WEAR, ItemWear.FACTORY_NEW];
 
 function image(seed: string, kind = 'weapon') {
   return `https://placehold.co/640x360/101827/f8fafc?text=${encodeURIComponent(kind === 'case' ? 'CASE ' : '')}${encodeURIComponent(seed)}`;
@@ -16,7 +17,7 @@ async function main() {
   await prisma.user.upsert({ where: { email: 'player@example.com' }, update: {}, create: { email: 'player@example.com', username: 'neon_player', passwordHash, balance: 5000 } });
   await prisma.user.upsert({ where: { email: 'admin@example.com' }, update: { role: 'ADMIN' }, create: { email: 'admin@example.com', username: 'arena_admin', passwordHash, role: 'ADMIN', balance: 20000 } });
 
-  const createdItems = [];
+  const createdItems: Item[] = [];
   for (let i = 0; i < 48; i++) {
     const rarity = rarities[Math.min(rarities.length - 1, Math.floor(i / 7))];
     const price = Math.round((120 + i * 95) * (1 + Math.floor(i / 7) * 0.55));
