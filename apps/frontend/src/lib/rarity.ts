@@ -1,13 +1,13 @@
 import type { Rarity } from '../types/api';
 
 export const rarityLabel: Record<Rarity, string> = {
-  CONSUMER_GRADE: 'Consumer Grade',
-  INDUSTRIAL_GRADE: 'Industrial Grade',
-  MIL_SPEC: 'Mil-Spec',
-  RESTRICTED: 'Restricted',
-  CLASSIFIED: 'Classified',
-  COVERT: 'Covert',
-  RARE_SPECIAL_ITEM: 'Rare Special Item'
+  CONSUMER_GRADE: 'Ширпотреб',
+  INDUSTRIAL_GRADE: 'Промышленное качество',
+  MIL_SPEC: 'Армейское качество',
+  RESTRICTED: 'Запрещённое',
+  CLASSIFIED: 'Засекреченное',
+  COVERT: 'Тайное',
+  RARE_SPECIAL_ITEM: 'Редкий особый предмет'
 };
 
 export const rarityClass: Record<Rarity, string> = {
