@@ -1,15 +1,19 @@
 {
-  "name": "cs2-case-arena",
+  "name": "social-network-mvp",
   "private": true,
   "version": "0.1.0",
   "workspaces": [
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace apps/backend & npm run dev --workspace apps/frontend",
-    "build": "npm run build --workspace apps/backend && npm run build --workspace apps/frontend",
-    "typecheck": "npm run typecheck --workspace apps/backend && npm run typecheck --workspace apps/frontend",
-    "db:migrate": "npm run prisma:migrate --workspace apps/backend",
-    "db:seed": "npm run prisma:seed --workspace apps/backend"
+    "dev": "npm run dev --workspace backend & npm run dev --workspace frontend",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend",
+    "db:migrate": "npm run prisma:migrate --workspace backend",
+    "db:seed": "npm run prisma:seed --workspace backend",
+    "test": "npm test --workspace backend && npm test --workspace frontend",
+    "coverage": "npm run coverage --workspace backend && npm run coverage --workspace frontend",
+    "test:load": "npm run test:load --workspace backend && npm run test:load --workspace frontend",
+    "test:mutation": "npm run test:mutation --workspace backend && npm run test:mutation --workspace frontend"
   }
 }

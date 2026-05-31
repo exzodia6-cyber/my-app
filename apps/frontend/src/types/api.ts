@@ -1,7 +1,9 @@
-export type Rarity = 'CONSUMER_GRADE'|'INDUSTRIAL_GRADE'|'MIL_SPEC'|'RESTRICTED'|'CLASSIFIED'|'COVERT'|'RARE_SPECIAL_ITEM';
-export type Item = { id:string; weapon:string; skin:string; rarity:Rarity; price:number; imageUrl:string; wear:string };
-export type CaseItem = { id:string; chance:number; item:Item };
-export type Case = { id:string; name:string; description:string; price:number; imageUrl:string; accentColor:string; items:CaseItem[] };
-export type InventoryItem = { id:string; acquiredAt:string; item:Item };
-export type User = { id:string; email:string; username:string; role:'USER'|'ADMIN'; balance:number };
-export type History = { id:string; type:string; title:string; metadata:Record<string, unknown>; createdAt:string };
+export type Role = 'USER' | 'ADMIN';
+export type Profile = { id: string; userId: string; name: string; bio: string; city: string; website: string; avatarUrl: string };
+export type User = { id: string; email: string; username: string; role: Role; createdAt: string; profile: Profile | null; isFollowing?: boolean; _count?: { followers: number; following: number; posts: number } };
+export type Comment = { id: string; content: string; createdAt: string; author: Pick<User, 'id' | 'username' | 'profile'> };
+export type Like = { id: string; userId: string; postId: string };
+export type Post = { id: string; content: string; createdAt: string; author: Pick<User, 'id' | 'username' | 'profile'>; comments: Comment[]; likes: Like[]; _count: { comments: number; likes: number } };
+export type Notification = { id: string; type: string; message: string; read: boolean; createdAt: string; actor?: Pick<User, 'username' | 'profile'> | null };
+export type AuthPayload = { token: string; user: User };
+export type AdminStats = { users: number; posts: number; comments: number; likes: number; follows: number; notifications: number };
