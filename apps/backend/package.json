@@ -1,5 +1,5 @@
 {
-  "name": "@cs2-case-arena/backend",
+  "name": "backend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,13 @@
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:integration": "node --import tsx --test test/integration/**/*.test.ts",
+    "test:load": "node --import tsx test/load/smoke.ts",
+    "test:mutation": "node --import tsx test/mutation/smoke.ts",
+    "coverage": "node --experimental-test-coverage --import tsx --test src/**/*.test.ts test/integration/**/*.test.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
@@ -36,5 +42,7 @@
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
-  "prisma": { "seed": "tsx prisma/seed.ts" }
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@cs2-case-arena/frontend",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npm run test:unit",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:load": "node --import tsx test/load/smoke.ts",
+    "test:mutation": "node --import tsx test/mutation/smoke.ts",
+    "coverage": "node --experimental-test-coverage --import tsx --test src/**/*.test.ts"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.5.0",

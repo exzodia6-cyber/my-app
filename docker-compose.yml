@@ -1,18 +1,18 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: cs2_case_postgres
+    container_name: social_mvp_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: cs2
-      POSTGRES_PASSWORD: cs2password
-      POSTGRES_DB: cs2_case_arena
+      POSTGRES_USER: social
+      POSTGRES_PASSWORD: socialpassword
+      POSTGRES_DB: social_mvp
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cs2 -d cs2_case_arena"]
+      test: ["CMD-SHELL", "pg_isready -U social -d social_mvp"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,13 +24,13 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://cs2:cs2password@postgres:5432/cs2_case_arena?schema=public
+      DATABASE_URL: postgresql://social:socialpassword@postgres:5432/social_mvp?schema=public
       JWT_SECRET: change-me-in-production
       PORT: 4000
       CORS_ORIGIN: http://localhost:5173
     ports:
       - "4000:4000"
-    command: sh -c "npx prisma migrate deploy --schema apps/backend/prisma/schema.prisma && npm run prisma:seed --workspace apps/backend && npm run dev --workspace apps/backend"
+    command: sh -c "npx prisma migrate deploy --schema apps/backend/prisma/schema.prisma && npm run prisma:seed --workspace backend && npm run dev --workspace backend"
     volumes:
       - .:/app
       - /app/node_modules
@@ -45,7 +45,7 @@ services:
       VITE_API_URL: http://localhost:4000/api
     ports:
       - "5173:5173"
-    command: npm run dev --workspace apps/frontend -- --host 0.0.0.0
+    command: npm run dev --workspace frontend -- --host 0.0.0.0
     volumes:
       - .:/app
       - /app/node_modules
