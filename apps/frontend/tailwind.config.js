@@ -1,0 +1,1 @@
+export default { content: ['./index.html','./src/**/*.{ts,tsx}'], theme: { extend: { colors: { night: '#070a12', panel: '#111827', gold: '#f6c453' }, boxShadow: { neon: '0 0 36px rgba(34,211,238,.25)' } } }, plugins: [] };

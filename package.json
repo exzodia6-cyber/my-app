@@ -1,0 +1,15 @@
+{
+  "name": "cs2-case-arena",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/backend & npm run dev --workspace apps/frontend",
+    "build": "npm run build --workspace apps/backend && npm run build --workspace apps/frontend",
+    "typecheck": "npm run typecheck --workspace apps/backend && npm run typecheck --workspace apps/frontend",
+    "db:migrate": "npm run prisma:migrate --workspace apps/backend",
+    "db:seed": "npm run prisma:seed --workspace apps/backend"
+  }
+}
